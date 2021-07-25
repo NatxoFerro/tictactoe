@@ -1,6 +1,6 @@
 import React from 'react';
 import Board from './Board';
-import { calculateWinner as isWinner } from './functions';
+import { calculateWinner as isWinner, calculatePosition } from './functions';
 
 class Game extends React.Component {
 
@@ -8,7 +8,8 @@ class Game extends React.Component {
     super(props);
     this.state = {
       history: [{
-        squares: Array(9).fill(null)
+        squares: Array(9).fill(null),
+        lastSquare: null
       }],
       stepNumber: 0,
       xIsNext: true
@@ -24,7 +25,8 @@ class Game extends React.Component {
     squares[i] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
       history: history.concat([{
-        squares: squares
+        squares: squares,
+        lastSquare: calculatePosition(i)
       }]),
       stepNumber: stepNumber,
       xIsNext: !this.state.xIsNext
@@ -47,10 +49,11 @@ class Game extends React.Component {
 
     const moves = history.map((step, move) => {
       const desc = move ? 'Go to move #' + move : 'Go to game start';
+      const pos = step.lastSquare;
       return (
         <li key={move}>
           <button onClick={() => this.jumpTo(move)}>
-            {desc}
+            {desc} {pos}
           </button>
         </li>
       );
